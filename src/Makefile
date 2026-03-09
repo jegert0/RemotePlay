@@ -3,7 +3,8 @@ CL = cl
 CFLAGS = -IC:\mingw_dev_lib\include -LC:\mingw_dev_lib\lib -w "-Wl,-subsystem,windows" -lmingw32  -lSDL3
 DEPS = includes.hpp emulate.hpp emulate.cpp remoteTest.cpp RemotePlayer.cpp
 OBJs = includes.o emulate.o emulate.o remoteTest.o RemotePlayer.o
-#need msvc ti compile these, vigem is dependant on msvc
+#need msvc to compile these, vigem is dependant on msvc
+#RDP_client and RDP_server were made in mingw.
 BUS_DEPENDANT = emulation.cpp
 VIFLAGS = /W4 /EHsc /I"C:\mingw_dev_lib\include" /I"C:\Grams\RemotePlayer\vcpkg\installed\x64-windows\include" /link /LIBPATH:"C:\Grams\RemotePlayer\vcpkg\installed\x64-windows\lib" /LIBPATH:"C:\mingw_dev_lib\lib\x86"
 LIBS = setupapi.lib ViGEmClient.lib user32.lib SDL3.lib
@@ -50,6 +51,14 @@ udpServer: udpServerTest.cpp
 
 udpClient: udpClientTest.cpp
 	$(CL) /EHsc udpClientTest.cpp $(BOOSTIN)
+
+#mingw 
+RDP_server: RDP_server.c
+	gcc RDP_server.c -o RDP_server.exe -lws2_32 -Wall $$(pkg-config --cflags --libs gstreamer-1.0)
+
+RDP_client: RDP_client.c
+	gcc RDP_client.c -o RDP_client.exe -lws2_32 -Wall $$(pkg-config --cflags --libs gstreamer-1.0)
+
 
 clean: *.obj
 	del /Q *.obj
